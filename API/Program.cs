@@ -1,5 +1,6 @@
 
 using API.Extensions;
+using API.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 
@@ -24,6 +25,8 @@ namespace API
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
+			app.UseMiddleware<ExceptionMiddleware>();
+
 			if (app.Environment.IsDevelopment())
 			{
 				app.UseSwagger();
