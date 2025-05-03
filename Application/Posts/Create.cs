@@ -44,7 +44,7 @@ namespace Application.Posts
 
 				var user = await _context.Users
 					.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUserName());
-				newPost.Owner = user;
+				newPost.User = user;
 
 				_context.Add(newPost);
 				var result = await _context.SaveChangesAsync() > 0;

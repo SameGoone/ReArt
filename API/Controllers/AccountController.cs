@@ -24,7 +24,7 @@ namespace API.Controllers
 
 		[AllowAnonymous]
 		[HttpPost("login")]
-		public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+		public async Task<ActionResult<IdentityDto>> Login(LoginDto loginDto)
 		{
 			var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
@@ -42,7 +42,7 @@ namespace API.Controllers
 
 		[AllowAnonymous]
 		[HttpPost("register")]
-		public async Task <ActionResult<UserDto>> Register(RegisterDto registerDto)
+		public async Task <ActionResult<IdentityDto>> Register(RegisterDto registerDto)
 		{
 			if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
 			{
@@ -73,16 +73,16 @@ namespace API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<UserDto>> GetCurrentUser()
+		public async Task<ActionResult<IdentityDto>> GetCurrentUser()
 		{
 			var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
 
 			return CreateUserObject(user);
 		}
 
-		private UserDto CreateUserObject(AppUser user)
+		private IdentityDto CreateUserObject(AppUser user)
 		{
-			return new UserDto
+			return new IdentityDto
 			{
 				DisplayName = user.DisplayName,
 				Image = null,
