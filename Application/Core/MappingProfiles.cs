@@ -9,8 +9,8 @@ namespace Application.Core
 		public MappingProfiles()
 		{
 			CreateMap<Post, Post>();
-			CreateMap<Post, PostDetailsDto>()
-				.ForMember(d => d.User, o => o.MapFrom(s => s.User.DisplayName));
+			CreateMap<AppUser, UserDto>();
+			CreateMap<Post, PostDetailsDto>();
 			CreateMap<PostCreateDto, Post>();
 		}
 	}

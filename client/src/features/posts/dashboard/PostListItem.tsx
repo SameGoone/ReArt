@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button, Icon, Item, ItemImage, Segment } from 'semantic-ui-react';
+import { Button, Icon, Image, Item, ItemImage, Segment } from 'semantic-ui-react';
 import { Post } from '../../../app/models/post';
 import { format } from 'date-fns';
 
@@ -9,38 +9,25 @@ interface Props {
 
 export default function PostListItem({ post }: Props) {
     return (
-        <Segment.Group>
-            <Segment>
-                <Item.Group>
-                    <Item>
-                        <ItemImage size='tiny' circular src='/assets/user.png' />
-                        <Item.Content>
-                            <Item.Header as={Link} to={`/posts/${post.id}`}>
-                                {post.body}
-                            </Item.Header>
-                            <Item.Description>Hosted by Bob</Item.Description>
-                        </Item.Content>
-                    </Item>
-                </Item.Group>
-            </Segment>
-            <Segment>
-                <span>
-                    <Icon name='clock' /> {format(post.createdOn!, 'dd MMM yyyy H:mm aa')}
-                </span>
-            </Segment>
-            <Segment secondary>
-                Attendees go here
-            </Segment>
-            <Segment clearing>
-                <span>{post.body}</span>
-                <Button
-                    as={Link}
-                    to={`/posts/${post.id}`}
-                    color='teal'
-                    floated='right'
-                    content='View'
-                />
-            </Segment>
-        </Segment.Group>
+        <Segment style={{ width: '22.5em', marginRight: '1.5em', padding: '0', borderRadius: '1.5em', display: 'inline-block' }}>
+            <Item.Group as={Link} to={`/posts/${post.id}`}>
+                <Item style={{marginBottom: '0.3em'}}>
+                    <Item.Content>
+                        <Item.Header>
+                            {!!post.image && <Image fluid style={{ borderTopLeftRadius: '1.5em', borderTopRightRadius: '1.5em' }}
+                                src={`data:image/${post.image.format};base64,${post.image.base64Data}`} />}
+                        </Item.Header>
+                        <Item.Description className='padding-left'>
+                            by {post.user.displayName}
+                        </Item.Description>
+                    </Item.Content>
+                </Item>
+                <Item style={{marginTop: '0', marginBottom: '0.5em'}}>
+                    <Item.Content>
+                        <span className='padding-left'>{format(post.createdOn!, 'dd MMM yyyy H:mm')}</span>
+                    </Item.Content>
+                </Item>
+            </Item.Group>
+        </Segment>
     );
 }

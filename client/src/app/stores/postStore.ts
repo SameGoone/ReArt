@@ -20,16 +20,6 @@ export default class PostStore {
             .sort((a, b) => a.createdOn!.getTime() - b.createdOn!.getTime());
     }
 
-    get groupedPosts() {
-        return Object.entries(
-            this.postsByCreatedOn.reduce((posts, post) => {
-                const date = format(post.createdOn!, 'dd MMM yyyy');
-                posts[date] = posts[date] ? [...posts[date], post] : [post];
-                return posts;
-            }, {} as {[key: string]: Post[]})
-        );
-    }
-
     loadPosts = async () => {
         this.loadingInitial = true;
         try {

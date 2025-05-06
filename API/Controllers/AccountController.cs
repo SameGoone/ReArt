@@ -84,6 +84,7 @@ namespace API.Controllers
 		{
 			return new IdentityDto
 			{
+				Id = user.Id,
 				DisplayName = user.DisplayName,
 				Image = null,
 				Token = _tokenService.CreateToken(user),

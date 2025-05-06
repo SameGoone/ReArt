@@ -20,12 +20,12 @@ export default observer (function PostDashboard() {
 
     return (
         <Grid>
-            <Grid.Column width='10'>
+            <Grid.Column width='16'>
                 <PostList />
             </Grid.Column>
-            <GridColumn width='6'>
+            {/* <GridColumn width='3'>
                 <PostFilters />
-            </GridColumn>
+            </GridColumn> */}
         </Grid>
     )
 })
