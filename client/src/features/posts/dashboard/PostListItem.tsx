@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Button, Icon, Image, Item, ItemImage, Segment } from 'semantic-ui-react';
+import { Image, Item, Segment } from 'semantic-ui-react';
 import { Post } from '../../../app/models/post';
 import { format } from 'date-fns';
+import LikeButton from '../../likes/LikeButton';
 
 interface Props {
     post: Post
@@ -23,8 +24,15 @@ export default function PostListItem({ post }: Props) {
                     </Item.Content>
                 </Item>
                 <Item style={{marginTop: '0', marginBottom: '0.5em'}}>
-                    <Item.Content>
-                        <span className='padding-left'>{format(post.createdOn!, 'dd MMM yyyy H:mm')}</span>
+                    <Item.Content style={{ display: 'flex', alignItems: 'center' }}>
+                        <span className='padding-left' style={{ marginRight: 'auto' }}>{format(post.createdOn!, 'dd MMM yyyy H:mm')}</span>
+                        <LikeButton
+                            likesInfo={post.likesInfo}
+                            size={20}
+                            postId={post.id}
+                            style={{ marginRight: '1em' }}
+                            enabled={false}
+                        />
                     </Item.Content>
                 </Item>
             </Item.Group>

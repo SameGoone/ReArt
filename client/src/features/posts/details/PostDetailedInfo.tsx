@@ -1,8 +1,7 @@
 import { observer } from 'mobx-react-lite';
-import { Segment, Grid, Icon, Button } from 'semantic-ui-react'
+import { Segment, Grid, Icon } from 'semantic-ui-react'
 import { Post } from "../../../app/models/post";
 import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
 
 interface Props {
     post: Post

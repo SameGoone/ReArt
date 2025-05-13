@@ -27,7 +27,11 @@ export default observer(function PostForm() {
             id: '',
             displayName: ''
         },
-        image: null
+        image: null,
+        likesInfo: {
+            count: 0,
+            isLiked: false
+        }
     });
     const [isReadingFile, setIsReadingFile] = useState(false);
 

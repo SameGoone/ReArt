@@ -10,7 +10,7 @@ import PostDetailedChat from "./PostDetailedChat";
 import PostDetailedSidebar from "./PostDetailedSidebar";
 
 
-export default observer(function PostDashboard() {
+export default observer(function PostDetails() {
     const { postStore } = useStore();
     const { selectedPost: post, loadPost, loadingInitial } = postStore;
     const { id } = useParams();

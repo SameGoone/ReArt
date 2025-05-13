@@ -1,20 +1,20 @@
 import { observer } from 'mobx-react-lite';
-import { Button, Header, Image, Item, Segment } from 'semantic-ui-react'
+import { Button, Image, Item, Segment } from 'semantic-ui-react'
 import { Post } from "../../../app/models/post";
 import { Link, useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
 import { useStore } from '../../../app/stores/store';
+import LikeButton from '../../likes/LikeButton';
 
 interface Props {
     post: Post
 }
 
 export default observer(function PostDetailedHeader({ post }: Props) {
-    const { postStore: { deletePost }, userStore: { user, logout }} = useStore();
+    const { postStore, userStore: { user }} = useStore();
     const navigate = useNavigate();
 
     function handleDelete() {
-        deletePost(post.id)
+        postStore.deletePost(post.id)
             .then(() => { navigate(`/posts`); });
     }
 
@@ -57,11 +57,13 @@ export default observer(function PostDetailedHeader({ post }: Props) {
                                 by <strong>{post.user.displayName}</strong>
                             </p>
                         </Item.Content>
-                        <Button as={Link} to={`/like/${post.id}`} color='teal'>
-                            Like
-                        </Button>
                     </Item>
                     <Item>
+                        <LikeButton
+                            likesInfo={post.likesInfo}
+                            size={24}
+                            postId={post.id}
+                        />
                     </Item>
                 </Item.Group>
             </Segment>

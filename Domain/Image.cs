@@ -1,8 +1,7 @@
 ﻿namespace Domain
 {
-    public class Image
+    public class Image : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Base64Data { get; set; }
         public string Format { get; set; }
     }

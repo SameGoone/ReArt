@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../stores/store";
 import { User, UserFormValues } from "../models/user";
+import { LikesInfo } from "../models/likesInfo";
 
 const sleep = (delay: number) => {
     return new Promise((resolve) => {
@@ -69,7 +70,7 @@ const requests = {
     get: <T> (url: string) => axios.get<T>(url).then(responseBody),
     post: <T> (url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
     put:<T> (url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
-    delete: <T> (url: string) => axios.delete<T>(url).then(responseBody),
+    delete: <T> (url: string, body: {} | undefined = undefined) => axios.delete<T>(url, body).then(responseBody),
 }
 
 const Posts = {
@@ -78,6 +79,11 @@ const Posts = {
     create: (post: Post) => requests.post<void>('/posts', post),
     update: (post: Post) => requests.put<void>(`/posts/${post.id}`, post),
     delete: (id: string) => requests.delete<void>(`/posts/${id}`),
+}
+
+const Likes = {
+    create: (postId: string) => requests.post<LikesInfo>('/likes', {postId}),
+    delete: (postId: string) => requests.delete<LikesInfo>(`/likes/${postId}`),
 }
 
 const Account = {
@@ -99,6 +105,7 @@ const agent = {
     Posts,
     Account,
     TestError,
+    Likes,
 }
 
 export default agent;

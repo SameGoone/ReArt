@@ -126,4 +126,18 @@ export default class PostStore {
             });
         }
     }
+
+    updatePostLikes = (postId: string, likesInfo: any) => {
+        runInAction(() => {
+            if (this.selectedPost && this.selectedPost.id === postId) {
+                this.selectedPost.likesInfo = likesInfo;
+            }
+
+            const postInRegistry = this.postRegistry.get(postId);
+            if (postInRegistry) {
+                postInRegistry.likesInfo = likesInfo;
+                this.postRegistry.set(postId, postInRegistry);
+            }
+        });
+    }
 }
