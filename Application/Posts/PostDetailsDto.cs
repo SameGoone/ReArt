@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Application.Likes;
+using Domain;
 
 namespace Application.Posts
 {
@@ -6,7 +7,9 @@ namespace Application.Posts
 	{
 		public Guid Id { get; set; }
 		public string Body { get; set; }
-		public DateTime CreatedOn { get; set; }
-		public AppUser Owner { get; set; }
+		public DateTime CreatedAt { get; set; }
+		public UserDto User { get; set; }
+		public Image Image { get; set; }
+		public LikesInfo LikesInfo { get; set; }
 	}
 }

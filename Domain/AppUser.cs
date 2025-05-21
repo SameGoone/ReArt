@@ -4,7 +4,10 @@ namespace Domain
 {
 	public class AppUser : IdentityUser
 	{
+		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 		public string DisplayName { get; set; }
 		public string Bio { get; set; }
-	}
+		
+
+    }
 }

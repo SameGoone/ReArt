@@ -43,8 +43,8 @@ namespace Application.Posts
 				_mapper.Map(request.Post, newPost);
 
 				var user = await _context.Users
-					.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUserName());
-				newPost.Owner = user;
+					.FirstOrDefaultAsync(x => x.Id == _userAccessor.GetUserId());
+				newPost.User = user;
 
 				_context.Add(newPost);
 				var result = await _context.SaveChangesAsync() > 0;
