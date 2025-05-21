@@ -5,7 +5,7 @@ import { PostUser } from "./user"
 export interface Post {
   id: string
   body: string
-  createdOn: Date
+  createdAt: Date
   user: PostUser
   image: Image | null
   likesInfo: LikesInfo | null

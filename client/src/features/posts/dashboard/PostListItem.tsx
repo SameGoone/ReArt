@@ -25,7 +25,7 @@ export default function PostListItem({ post }: Props) {
                 </Item>
                 <Item style={{marginTop: '0', marginBottom: '0.5em'}}>
                     <Item.Content style={{ display: 'flex', alignItems: 'center' }}>
-                        <span className='padding-left' style={{ marginRight: 'auto' }}>{format(post.createdOn!, 'dd MMM yyyy H:mm')}</span>
+                        <span className='padding-left' style={{ marginRight: 'auto' }}>{format(post.createdAt!, 'dd MMM yyyy H:mm')}</span>
                         <LikeButton
                             likesInfo={post.likesInfo}
                             size={20}

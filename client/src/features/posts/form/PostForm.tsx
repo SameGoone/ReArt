@@ -22,7 +22,7 @@ export default observer(function PostForm() {
     const [post, setPost] = useState<Post>({
         id: '',
         body: '',
-        createdOn: new Date(),
+        createdAt: new Date(),
         user: {
             id: '',
             displayName: ''

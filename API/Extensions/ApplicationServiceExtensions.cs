@@ -57,6 +57,7 @@ namespace API.Extensions
 				{
 					policy.AllowAnyHeader()
 						.AllowAnyMethod()
+						.AllowCredentials()
 						.WithOrigins("http://localhost:3000", "https://localhost:3000");
 				});
 			});
@@ -66,6 +67,7 @@ namespace API.Extensions
 			services.AddValidatorsFromAssemblyContaining<Create>();
 			services.AddHttpContextAccessor();
 			services.AddScoped<IUserAccessor, UserAccessor>();
+			services.AddSignalR();
 
 			return services;
 		}

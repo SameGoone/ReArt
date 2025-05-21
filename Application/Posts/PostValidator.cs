@@ -8,7 +8,7 @@ namespace Application.Posts
 		public PostValidator()
 		{
 			RuleFor(x => x.Body).NotEmpty();
-			RuleFor(x => x.CreatedOn).NotEmpty();
+			RuleFor(x => x.CreatedAt).NotEmpty();
 		}
 	}
 }

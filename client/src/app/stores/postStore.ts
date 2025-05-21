@@ -17,7 +17,7 @@ export default class PostStore {
 
     get postsByCreatedOn() {
         return Array.from(this.postRegistry.values())
-            .sort((a, b) => a.createdOn!.getTime() - b.createdOn!.getTime());
+            .sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
     }
 
     loadPosts = async () => {
@@ -66,7 +66,7 @@ export default class PostStore {
     }
 
     private setPost = (post: Post) => {
-        post.createdOn = new Date(post.createdOn!);
+        post.createdAt = new Date(post.createdAt!);
         this.postRegistry.set(post.id, post);
     }
 

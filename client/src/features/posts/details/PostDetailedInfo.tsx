@@ -27,7 +27,7 @@ export default observer(function PostDetailedInfo({ post }: Props) {
                     </Grid.Column>
                     <Grid.Column width={15}>
                         <span>
-                            {format(post.createdOn!, 'dd MMM yyyy H:mm aa')}
+                            {format(post.createdAt!, 'dd MMM yyyy H:mm aa')}
                         </span>
                     </Grid.Column>
                 </Grid>

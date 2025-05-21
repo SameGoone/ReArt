@@ -1,3 +1,4 @@
+using Application.Comments;
 using Application.Posts;
 using AutoMapper;
 using Domain;
@@ -12,6 +13,7 @@ namespace Application.Core
 			CreateMap<AppUser, UserDto>();
 			CreateMap<Post, PostDetailsDto>();
 			CreateMap<PostCreateDto, Post>();
+			CreateMap<Comment, CommentDto>();
 		}
 	}
 }

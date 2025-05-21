@@ -1,6 +1,7 @@
 
 using API.Extensions;
 using API.Middleware;
+using API.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 
@@ -42,6 +43,7 @@ namespace API
 
 
 			app.MapControllers();
+			app.MapHub<CommentHub>("/comments");
 
 			app.Run();
 		}

@@ -3,11 +3,6 @@
 	public class BaseEntity
 	{
 		public Guid Id { get; set; }
-		public DateTime CreatedOn { get; set; }
-
-		public BaseEntity()
-		{
-			CreatedOn = DateTime.Now;
-		}
+		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 	}
 }
