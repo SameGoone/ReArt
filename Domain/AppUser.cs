@@ -7,7 +7,6 @@ namespace Domain
 		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 		public string DisplayName { get; set; }
 		public string Bio { get; set; }
-		
-
+		public Image Image { get; set; }
     }
 }

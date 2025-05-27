@@ -3,7 +3,7 @@ import { Post } from "../models/post";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../stores/store";
-import { User, UserFormValues } from "../models/user";
+import { UserDetails, UserFormValues } from "../models/user";
 import { LikesInfo } from "../models/likesInfo";
 
 const sleep = (delay: number) => {
@@ -86,10 +86,11 @@ const Likes = {
     delete: (postId: string) => requests.delete<LikesInfo>(`/likes/${postId}`),
 }
 
-const Account = {
-    current: () => requests.get<User>('/account'),
-    login: (user: UserFormValues) => requests.post<User>('/account/login', user),
-    register: (user: UserFormValues) => requests.post<User>('/account/register', user),
+const Users = {
+    current: () => requests.get<UserDetails>('/users'),
+    details: (id: string) => requests.get<UserDetails>(`/users/${id}`),
+    login: (creds: UserFormValues) => requests.post<UserDetails>('/users/login', creds),
+    register: (creds: UserFormValues) => requests.post<UserDetails>('/users/register', creds),
 }
 
 const TestError = {
@@ -103,7 +104,7 @@ const TestError = {
 
 const agent = {
     Posts,
-    Account,
+    Users,
     TestError,
     Likes,
 }

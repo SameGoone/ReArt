@@ -1,11 +1,13 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { User, UserFormValues } from "../models/user";
+import { UserDetails, UserFormValues } from "../models/user";
 import agent from "../api/agent";
 import { store } from "./store";
 import { router } from "../router/Routes";
 
 export default class UserStore {
-    user: User | null = null;
+    user: UserDetails | null = null;
+    selectedUser: UserDetails | undefined = undefined;
+    userLoadingInitial = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -17,8 +19,8 @@ export default class UserStore {
 
     login = async (creds: UserFormValues) => {
         try {
-            const user = await agent.Account.login(creds);
-            store.commonStore.setToken(user.token);
+            const user = await agent.Users.login(creds);
+            store.commonStore.setToken(user.token!);
             runInAction(() => this.user = user);
             router.navigate('/posts');
             store.modalStore.closeModal();
@@ -29,8 +31,8 @@ export default class UserStore {
 
     register = async (creds: UserFormValues) => {
         try {
-            const user = await agent.Account.register(creds);
-            store.commonStore.setToken(user.token);
+            const user = await agent.Users.register(creds);
+            store.commonStore.setToken(user.token!);
             runInAction(() => this.user = user);
             router.navigate('/posts');
             store.modalStore.closeModal();
@@ -45,12 +47,30 @@ export default class UserStore {
         router.navigate('/');
     }
     
-    getUser = async () => {
+    getCurrentUser = async () => {
         try {
-            const user = await agent.Account.current();
+            const user = await agent.Users.current();
             runInAction(() => this.user = user)
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    loadUser = async (id: string) => {
+        this.userLoadingInitial = true;
+
+        try {
+            const user = await agent.Users.details(id);
+            runInAction(() => {
+                this.selectedUser = user;
+                this.userLoadingInitial = false;
+            });
+            return user;
+        } catch (error) {
+            console.error(error);
+            runInAction(() => {
+                this.userLoadingInitial = false;
+            });
         }
     }
 }

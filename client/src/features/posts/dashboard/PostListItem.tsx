@@ -19,7 +19,7 @@ export default function PostListItem({ post }: Props) {
                                 src={`data:image/${post.image.format};base64,${post.image.base64Data}`} />}
                         </Item.Header>
                         <Item.Description className='padding-left'>
-                            by {post.user.displayName}
+                            by {post.user?.displayName}
                         </Item.Description>
                     </Item.Content>
                 </Item>

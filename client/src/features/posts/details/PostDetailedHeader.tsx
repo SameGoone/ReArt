@@ -26,22 +26,22 @@ export default observer(function PostDetailedHeader({ post }: Props) {
                         <Button
                             as={Link}
                             to={`/posts`}
-                            color='blue'
-                            floated='left'
-                            content='Back'
+                            content='Back' 
+                            icon='arrow left'
+                            labelPosition='left'
                         />
                         <Button
                             color='yellow'
                             as={Link} to={`/manage/${post.id}`}
                             floated='right'
-                            style={user?.id !== post.user.id ? {display:'none'} : {}}
+                            style={user?.id !== post.user?.id ? {display:'none'} : {}}
                             content='Manage post'
                         />
                         <Button
                             color='red'
                             onClick={handleDelete}
                             floated='right'
-                            style={user?.id !== post.user.id ? {display:'none'} : {}}
+                            style={user?.id !== post.user?.id ? {display:'none'} : {}}
                             content='Delete post'
                         />
                     </Item>
@@ -54,7 +54,7 @@ export default observer(function PostDetailedHeader({ post }: Props) {
                     <Item>
                         <Item.Content>
                             <p>
-                                by <strong>{post.user.displayName}</strong>
+                                by <strong>{post.user?.displayName}</strong>
                             </p>
                         </Item.Content>
                     </Item>

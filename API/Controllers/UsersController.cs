@@ -1,6 +1,8 @@
-﻿using API.DTOs;
-using API.Services;
+﻿using API.Services;
+using Application.Users;
+using AutoMapper;
 using Domain;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,22 +11,22 @@ using System.Security.Claims;
 
 namespace API.Controllers
 {
-	[ApiController]
-	[Route("api/[controller]")]
-	public class AccountController : ControllerBase
+	public class UsersController : BaseApiController
 	{
 		private readonly UserManager<AppUser> _userManager;
 		private readonly TokenService _tokenService;
+		private readonly IMapper _mapper;
 
-		public AccountController(UserManager<AppUser> userManager, TokenService tokenService)
+		public UsersController(UserManager<AppUser> userManager, TokenService tokenService, IMapper mapper)
 		{
 			_userManager = userManager;
 			_tokenService = tokenService;
+			_mapper = mapper;
 		}
 
 		[AllowAnonymous]
 		[HttpPost("login")]
-		public async Task<ActionResult<IdentityDto>> Login(LoginDto loginDto)
+		public async Task<ActionResult<UserDetailsDto>> Login(LoginDto loginDto)
 		{
 			var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
@@ -42,7 +44,7 @@ namespace API.Controllers
 
 		[AllowAnonymous]
 		[HttpPost("register")]
-		public async Task <ActionResult<IdentityDto>> Register(RegisterDto registerDto)
+		public async Task <ActionResult<UserDetailsDto>> Register(RegisterDto registerDto)
 		{
 			if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
 			{
@@ -73,23 +75,25 @@ namespace API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IdentityDto>> GetCurrentUser()
+		public async Task<ActionResult<UserDetailsDto>> GetCurrentUser()
 		{
 			var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
 
 			return CreateUserObject(user);
 		}
 
-		private IdentityDto CreateUserObject(AppUser user)
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetUser(string id)
 		{
-			return new IdentityDto
-			{
-				Id = user.Id,
-				DisplayName = user.DisplayName,
-				Image = null,
-				Token = _tokenService.CreateToken(user),
-				Username = user.UserName,
-			};
+			return HandleResult(
+				await Mediator.Send(new Details.Query { Id = id }));
+		}
+
+		private UserDetailsDto CreateUserObject(AppUser user)
+		{
+			var userDto = _mapper.Map<UserDetailsDto>(user);
+			userDto.Token = _tokenService.CreateToken(user);
+			return userDto;
 		}
 	}
 }

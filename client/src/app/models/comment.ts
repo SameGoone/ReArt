@@ -1,8 +1,8 @@
-import { PostUser } from "./user";
+import { UserDetails } from "./user";
 
 export interface PostComment {
     id: number;
     createdAt: string;
     body: string;
-    author: PostUser;
+    author: UserDetails;
 }

@@ -18,9 +18,9 @@ namespace Application.Comments
 			public Guid PostId { get; set; }
 		}
 
-		public class CommantValifator : AbstractValidator<Command>
+		public class CommandValidator : AbstractValidator<Command>
 		{
-			public CommantValifator()
+			public CommandValidator()
 			{
 				RuleFor(x => x.Body).NotEmpty();
 			}

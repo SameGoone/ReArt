@@ -1,14 +1,14 @@
-export interface PostUser {
-    id: string
-    displayName: string;
-}
+import { Image } from "./image"
 
-export interface User {
-    id: string
-    username: string;
+export interface UserDetails {
+    id: string;
     displayName: string;
-    token: string;
-    image?: string;
+    createdAt?: string;
+    username?: string;
+    image?: Image;
+    email?: string;
+    token?: string;
+    bio?: string;
 }
 
 export interface UserFormValues {

@@ -30,7 +30,7 @@ namespace Application.Comments
 				var comments = await _context.Comments
 					.Include(x => x.Author)
 					.Where(x => x.PostId == request.PostId)
-					.OrderBy(x => x.CreatedAt)
+					.OrderByDescending(x => x.CreatedAt)
 					.ProjectTo<CommentDto>(_mapper.ConfigurationProvider)
 					.ToListAsync();
 
