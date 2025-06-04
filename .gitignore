@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /API/reart.db-shm
 /API/reart.db-wal
 .vscode/tasks.json
+client
