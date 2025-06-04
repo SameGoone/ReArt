@@ -1,12 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx"
-import { Post } from "../models/post";
+import { PostCreateDto, PostDetailsDto } from "../models/post";
 import agent from "../api/agent";
-import { v4 as uuid } from 'uuid'
-import { format } from "date-fns";
 
 export default class PostStore {
-    postRegistry = new Map<string, Post>();
-    selectedPost: Post | undefined = undefined;
+    postRegistry = new Map<string, PostDetailsDto>();
+    selectedPost: PostDetailsDto | undefined = undefined;
     editMode = false;
     loading = false;
     loadingInitial = false;
@@ -17,7 +15,7 @@ export default class PostStore {
 
     get postsByCreatedOn() {
         return Array.from(this.postRegistry.values())
-            .sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
+            .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
     }
 
     loadPosts = async () => {
@@ -25,7 +23,7 @@ export default class PostStore {
         try {
             const posts = await agent.Posts.list();
             runInAction(() => {
-                this.postRegistry = new Map<string, Post>();
+                this.postRegistry = new Map<string, PostDetailsDto>();
                 posts.forEach(post => {
                     this.setPost(post);
                 });
@@ -51,8 +49,7 @@ export default class PostStore {
             try {
                 post = await agent.Posts.details(id);
                 runInAction(() => {
-                    this.setPost(post!);
-                    this.selectedPost = post;
+                    this.selectPost(post!);
                     this.loadingInitial = false;
                 });
                 return post;
@@ -65,26 +62,31 @@ export default class PostStore {
         }
     }
 
-    private setPost = (post: Post) => {
-        post.createdAt = new Date(post.createdAt!);
+    private setPost = (post: PostDetailsDto) => {
+        post.createdAt = new Date(post.createdAt);
         this.postRegistry.set(post.id, post);
+    }
+
+    private selectPost = (post: PostDetailsDto) => {
+        post.createdAt = new Date(post.createdAt);
+        this.postRegistry.set(post.id, post);
+        this.selectedPost = post;
     }
 
     private getPost = (id: string) => {
         return this.postRegistry.get(id);
     }
 
-    createPost = async (post: Post) => {
+    createPost = async (postInput: PostCreateDto) => {
         this.loading = true;
-        post.id = uuid();
         try {
-            await agent.Posts.create(post);
+            const createdPost = await agent.Posts.create(postInput);
             runInAction(() => {
-                this.postRegistry.set(post.id, post);
-                this.selectedPost = post;
+                this.selectPost(createdPost);
                 this.editMode = false;
                 this.loading = false;
             });
+            return createdPost.id;
         } catch (error) {
             console.error(error);
             runInAction(() => {
@@ -93,16 +95,16 @@ export default class PostStore {
         }
     }
 
-    updatePost = async (post: Post) => {
+    updatePost = async (postInput: PostCreateDto) => {
         this.loading = true;
         try {
-            await agent.Posts.update(post);
+            const updatedPost = await agent.Posts.update(postInput);
             runInAction(() => {
-                this.postRegistry.set(post.id, post);
-                this.selectedPost = post;
+                this.selectPost(updatedPost);
                 this.editMode = false;
                 this.loading = false;
             });
+            return updatedPost.id;
         } catch (error) {
             console.error(error);
             runInAction(() => {

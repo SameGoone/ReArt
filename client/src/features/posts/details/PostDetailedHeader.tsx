@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default observer(function PostDetailedHeader({ post }: Props) {
-    const { postStore, userStore: { user }} = useStore();
+    const { postStore, userStore: { authorizedUser: user }} = useStore();
     const navigate = useNavigate();
 
     function handleDelete() {
@@ -52,7 +52,7 @@ export default observer(function PostDetailedHeader({ post }: Props) {
                         </Item.Content>
                     </Item>
                     <Item>
-                        <Item.Content>
+                        <Item.Content as={Link} to={`/users/${post.user?.id}`}>
                             <p>
                                 by <strong>{post.user?.displayName}</strong>
                             </p>

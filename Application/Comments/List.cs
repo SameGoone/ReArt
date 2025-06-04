@@ -29,6 +29,7 @@ namespace Application.Comments
 			{
 				var comments = await _context.Comments
 					.Include(x => x.Author)
+					.Include(x => x.Author.Image)
 					.Where(x => x.PostId == request.PostId)
 					.OrderByDescending(x => x.CreatedAt)
 					.ProjectTo<CommentDto>(_mapper.ConfigurationProvider)

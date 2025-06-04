@@ -72,7 +72,9 @@ export default observer(function PostDetailedComments({postId}: Props) {
                 <Comment.Group>
                     {commentStore.comments.map(comment => (
                         <Comment key={comment.id}>
-                            {/* <Comment.Avatar src='/assets/user.png' /> */}
+                            {comment.author.image && (<Comment.Avatar src={comment.author.image 
+                                ? `data:image/${comment.author.image.format};base64,${comment.author.image.base64Data}` 
+                                : '/assets/user.png'} />)}
                             <Comment.Content>
                                 <Comment.Author as={Link} to={`/users/${comment.author.id}`}>{comment.author.displayName}</Comment.Author>
                                 <Comment.Metadata>

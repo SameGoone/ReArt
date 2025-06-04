@@ -41,12 +41,16 @@ namespace Application.Comments
 
 			public async Task<Result<CommentDto>> Handle(Command request, CancellationToken cancellationToken)
 			{
-				var userId = _userAccessor.GetUserId();
-				var user = await _context.Users.FindAsync(userId);
-				var comment = new Comment
+				var userResult = await _userAccessor.GetCurrentUser();
+                if (!userResult.IsSuccess)
+				{
+					return Result<CommentDto>.Copy(userResult);
+				}
+
+                var comment = new Comment
 				{
 					Body = request.Body,
-					Author = user,
+					Author = userResult.Value,
 					PostId = request.PostId,
 				};
 

@@ -1,5 +1,6 @@
 using Application.Core;
 using Application.Interfaces;
+using Application.Images;
 using AutoMapper;
 using Domain;
 using FluentValidation;
@@ -11,7 +12,7 @@ namespace Application.Posts
 {
 	public class Create
 	{
-		public class Command : IRequest<Result<Unit>>
+		public class Command : IRequest<Result<PostDetailsDto>>
 		{
 			public PostCreateDto Post { get; set; }
 		}
@@ -21,23 +22,26 @@ namespace Application.Posts
 			public CommandValidator()
 			{
 				RuleFor(x => x.Post).SetValidator(new PostValidator());
+				RuleFor(x => x.Post.Image).SetValidator(new ImageValidator());
 			}
 		}
 
-		public class Handler : IRequestHandler<Command, Result<Unit>>
+		public class Handler : IRequestHandler<Command, Result<PostDetailsDto>>
 		{
 			private readonly DataContext _context;
 			private readonly IUserAccessor _userAccessor;
 			private readonly IMapper _mapper;
+			private readonly IMediator _mediator;
 
-			public Handler(DataContext context, IUserAccessor userAccessor, IMapper mapper)
+			public Handler(DataContext context, IUserAccessor userAccessor, IMapper mapper, IMediator mediator)
 			{
 				_context = context;
 				_userAccessor = userAccessor;
 				_mapper = mapper;
+				_mediator = mediator;
 			}
 
-			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+			public async Task<Result<PostDetailsDto>> Handle(Command request, CancellationToken cancellationToken)
 			{
 				var newPost = new Post();
 				_mapper.Map(request.Post, newPost);
@@ -50,9 +54,9 @@ namespace Application.Posts
 				var result = await _context.SaveChangesAsync() > 0;
 
 				if (!result)
-					return Result<Unit>.Failure("Failed to create post");
+					return Result<PostDetailsDto>.Failure("Failed to create post");
 
-				return Result<Unit>.Success(Unit.Value);
+				return await _mediator.Send(new Details.Query { Id = newPost.Id });
 			}
 		}
 	}

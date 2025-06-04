@@ -1,14 +1,19 @@
-import { Image } from "./image"
+import { ImageDto } from "./image"
 
 export interface UserDetails {
     id: string;
     displayName: string;
-    createdAt?: string;
-    username?: string;
-    image?: Image;
-    email?: string;
-    token?: string;
-    bio?: string;
+    createdAt: string;
+    image: ImageDto;
+    email: string;
+    bio: string;
+}
+
+export interface UserIdentity {
+    id: string;
+    displayName: string;
+    image: ImageDto;
+    token: string;
 }
 
 export interface UserFormValues {

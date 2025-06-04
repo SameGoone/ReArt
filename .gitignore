@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /API/reart.db
 /API/reart.db-shm
 /API/reart.db-wal
+.vscode/tasks.json

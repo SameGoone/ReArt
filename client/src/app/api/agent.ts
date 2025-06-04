@@ -1,9 +1,10 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { Post } from "../models/post";
+import { PostCreateDto, PostDetailsDto } from "../models/post";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../stores/store";
-import { UserDetails, UserFormValues } from "../models/user";
+import { UserDetails, UserFormValues, UserIdentity } from "../models/user";
+import { ImageDto } from "../models/image";
 import { LikesInfo } from "../models/likesInfo";
 
 const sleep = (delay: number) => {
@@ -74,10 +75,10 @@ const requests = {
 }
 
 const Posts = {
-    list: () => requests.get<Post[]>('/posts'),
-    details: (id: string) => requests.get<Post>(`/posts/${id}`),
-    create: (post: Post) => requests.post<void>('/posts', post),
-    update: (post: Post) => requests.put<void>(`/posts/${post.id}`, post),
+    list: () => requests.get<PostDetailsDto[]>('/posts'),
+    details: (id: string) => requests.get<PostDetailsDto>(`/posts/${id}`),
+    create: (post: PostCreateDto) => requests.post<PostDetailsDto>('/posts', post),
+    update: (post: PostCreateDto) => requests.put<PostDetailsDto>(`/posts/${post.id}`, post),
     delete: (id: string) => requests.delete<void>(`/posts/${id}`),
 }
 
@@ -87,10 +88,11 @@ const Likes = {
 }
 
 const Users = {
-    current: () => requests.get<UserDetails>('/users'),
+    current: () => requests.get<UserIdentity>('/users'),
+    login: (creds: UserFormValues) => requests.post<UserIdentity>('/users/login', creds),
+    register: (creds: UserFormValues) => requests.post<UserIdentity>('/users/register', creds),
     details: (id: string) => requests.get<UserDetails>(`/users/${id}`),
-    login: (creds: UserFormValues) => requests.post<UserDetails>('/users/login', creds),
-    register: (creds: UserFormValues) => requests.post<UserDetails>('/users/register', creds),
+    updateImage: (id: string, image: ImageDto) => requests.post<void>(`/users/${id}/image`, image),
 }
 
 const TestError = {

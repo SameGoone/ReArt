@@ -1,8 +1,9 @@
 ﻿using API.Services;
+using Application.Images;
+using Application.Interfaces;
 using Application.Users;
 using AutoMapper;
 using Domain;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,27 +17,29 @@ namespace API.Controllers
 		private readonly UserManager<AppUser> _userManager;
 		private readonly TokenService _tokenService;
 		private readonly IMapper _mapper;
+		private readonly IUserAccessor _userAccessor;
 
-		public UsersController(UserManager<AppUser> userManager, TokenService tokenService, IMapper mapper)
+		public UsersController(UserManager<AppUser> userManager, TokenService tokenService, IMapper mapper, IUserAccessor userAccessor)
 		{
 			_userManager = userManager;
 			_tokenService = tokenService;
 			_mapper = mapper;
+			_userAccessor = userAccessor;
 		}
 
 		[AllowAnonymous]
 		[HttpPost("login")]
-		public async Task<ActionResult<UserDetailsDto>> Login(LoginDto loginDto)
+		public async Task<IActionResult> Login(LoginDto loginDto)
 		{
 			var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
 			if (user == null)
 				return Unauthorized();
 
-			var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
-			if (result)
+			var check = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+			if (check)
 			{
-				return CreateUserObject(user);
+				return await GetDetailedIdentity(user.Id);
 			}
 
 			return Unauthorized();
@@ -44,7 +47,7 @@ namespace API.Controllers
 
 		[AllowAnonymous]
 		[HttpPost("register")]
-		public async Task <ActionResult<UserDetailsDto>> Register(RegisterDto registerDto)
+		public async Task<IActionResult> Register(RegisterDto registerDto)
 		{
 			if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
 			{
@@ -68,30 +71,63 @@ namespace API.Controllers
 
 			if (result.Succeeded)
 			{
-				return CreateUserObject(user);
+				return await GetDetailedIdentity(user.Id);
 			}
 
 			return BadRequest(result.Errors);
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<UserDetailsDto>> GetCurrentUser()
+		public async Task<IActionResult> GetCurrentUser()
 		{
-			var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
-
-			return CreateUserObject(user);
+			return await GetDetailedIdentity(User.FindFirstValue(ClaimTypes.NameIdentifier));
 		}
 
 		[HttpGet("{id}")]
-		public async Task<IActionResult> GetUser(string id)
+		public async Task<ActionResult<UserDetailsDto>> GetUser(string id)
 		{
-			return HandleResult(
-				await Mediator.Send(new Details.Query { Id = id }));
+			var result = HandleResult(
+				await _userAccessor.GetUser(id));
+
+			if (result is OkObjectResult okResult)
+			{
+				var user = (AppUser)okResult.Value;
+				okResult.Value = _mapper.Map<UserDetailsDto>(user);
+				return okResult;
+			}
+			else
+			{
+				return result;
+			}
 		}
 
-		private UserDetailsDto CreateUserObject(AppUser user)
+		[HttpPost("{id}/image")]
+		public async Task<IActionResult> UpdateImage(string id, [FromBody] ImageDto image)
 		{
-			var userDto = _mapper.Map<UserDetailsDto>(user);
+			return HandleResult(
+				await Mediator.Send(new UpdateImage.Command { UserId = id, Image = image }));
+		}
+
+		private async Task<IActionResult> GetDetailedIdentity(string userId)
+		{
+			var result = HandleResult(
+				await _userAccessor.GetUser(userId));
+
+			if (result is OkObjectResult okResult)
+			{
+				var user = (AppUser)okResult.Value;
+				okResult.Value = CreateIdentityDto(user);
+				return okResult;
+			}
+			else
+			{
+				return result;
+			}
+		}
+
+		private UserIdentityDto CreateIdentityDto(AppUser user)
+		{
+			var userDto = _mapper.Map<UserIdentityDto>(user);
 			userDto.Token = _tokenService.CreateToken(user);
 			return userDto;
 		}

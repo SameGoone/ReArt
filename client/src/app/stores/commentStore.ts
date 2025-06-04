@@ -15,7 +15,7 @@ export default class CommentStore {
         if (store.postStore.selectedPost) {
             this.hubConnection = new HubConnectionBuilder()
                 .withUrl('http://localhost:5010/comments?postId=' + postId, {
-                    accessTokenFactory: () => store.userStore.user?.token!
+                    accessTokenFactory: () => store.userStore.authorizedUser?.token!
                 })
                 .withAutomaticReconnect()
                 .configureLogging(LogLevel.Information)
@@ -26,7 +26,7 @@ export default class CommentStore {
 
             this.hubConnection.on('LoadComments', (comments: PostComment[]) => {
                 runInAction(() => {
-                    comments.forEach(comment => comment.createdAt += 'Z')
+                    comments.forEach(comment => comment.createdAt)
                     this.comments = comments;
                 })
             });

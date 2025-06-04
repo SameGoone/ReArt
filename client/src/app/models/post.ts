@@ -1,12 +1,18 @@
-import { Image } from "./image"
+import { ImageDto } from "./image"
 import { LikesInfo } from "./likesInfo"
 import { UserDetails } from "./user"
 
-export interface Post {
+export interface PostDetailsDto {
   id: string
   body: string
   createdAt: Date
-  user: UserDetails | null
-  image: Image | null
-  likesInfo: LikesInfo | null
+  user: UserDetails
+  image: ImageDto
+  likesInfo: LikesInfo
+}
+
+export interface PostCreateDto {
+  id?: String
+  body: String
+  image: ImageDto | null
 }

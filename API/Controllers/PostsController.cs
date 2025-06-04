@@ -1,10 +1,9 @@
 ﻿using Application.Posts;
-using Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-	public class PostsController : BaseApiController
+    public class PostsController : BaseApiController
 	{
 		[HttpGet]
 		public async Task<IActionResult> GetPosts()
@@ -32,7 +31,7 @@ namespace API.Controllers
 		{
 			post.Id = id;
 			return HandleResult(
-				await Mediator.Send(new Edit.Command { Post = post }));
+				await Mediator.Send(new Application.Posts.Edit.Command { Post = post }));
 		}
 
 		[HttpDelete("{id}")]

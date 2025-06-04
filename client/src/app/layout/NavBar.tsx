@@ -1,11 +1,18 @@
-import { Button, Container, Menu, MenuItem, Image, Dropdown } from "semantic-ui-react";
+import { Button, Container, Menu, MenuItem, Dropdown, Image } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import { Link, NavLink } from "react-router-dom";
 import { useStore } from "../stores/store";
 
-
 export default observer(function NavBar() {
-    const { userStore: { user, logout } } = useStore();
+    const { userStore: { authorizedUser: user, logout } } = useStore();
+
+    const avatarStyle: React.CSSProperties = {
+        width: '35px',
+        height: '35px',
+        borderRadius: '50%',
+        objectFit: 'cover'
+    };
+
     return (
         <Menu inverted fixed='top'>
             <Container>
@@ -19,7 +26,14 @@ export default observer(function NavBar() {
                     <Button as={NavLink} to='/createPost' positive content='Create Post' />
                 </Menu.Item>
                 <MenuItem position="right">
-                    <Image src={user?.image || '/assets/user.png'} avatar spaced='right' />
+                    <Image
+                        src={!!user?.image 
+                                ? `data:image/${user.image.format};base64,${user.image.base64Data}` 
+                                : '/assets/user.png'}
+                        style={avatarStyle}
+                        alt='User avatar'
+                        avatar spaced='right'
+                    />
                     <Dropdown pointing='top left' text={user?.displayName}>
                         <Dropdown.Menu>
                             <Dropdown.Item as={Link} to={`/users/${user?.id}`} text='My Profile' icon='user' />

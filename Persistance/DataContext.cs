@@ -1,6 +1,8 @@
 ﻿using Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Persistance;
+using System.Reflection.Emit;
 
 namespace Persistence
 {
@@ -19,10 +21,32 @@ namespace Persistence
 		{
 			base.OnModelCreating(builder);
 
+			foreach (var entityType in builder.Model.GetEntityTypes())
+			{
+				foreach (var property in entityType.GetProperties())
+				{
+					if (property.ClrType == typeof(DateTime))
+					{
+						property.SetValueConverter(new DateTimeUtcConverter());
+					}
+					else if (property.ClrType == typeof(DateTime?))
+					{
+						property.SetValueConverter(new NullableDateTimeUtcConverter());
+					}
+				}
+			}
+
 			builder.Entity<Comment>()
 				.HasOne(x => x.Post)
 				.WithMany(x => x.Comments)
 				.OnDelete(DeleteBehavior.Cascade);
+
+			builder.Entity<AppUser>()
+				.HasOne(u => u.Image)
+				.WithOne()
+				.HasForeignKey<AppUser>(u => u.ImageId)
+				.IsRequired(false)
+				.OnDelete(DeleteBehavior.SetNull);
 		}
 	}
 }
